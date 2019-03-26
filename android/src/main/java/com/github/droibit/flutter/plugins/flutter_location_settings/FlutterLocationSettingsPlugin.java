@@ -10,7 +10,8 @@ import io.flutter.plugin.common.PluginRegistry.Registrar;
 public class FlutterLocationSettingsPlugin implements MethodCallHandler {
   /** Plugin registration. */
   public static void registerWith(Registrar registrar) {
-    final MethodChannel channel = new MethodChannel(registrar.messenger(), "flutter_location_settings");
+    final MethodChannel channel =
+        new MethodChannel(registrar.messenger(), "flutter_location_settings");
     channel.setMethodCallHandler(new FlutterLocationSettingsPlugin());
   }
 
