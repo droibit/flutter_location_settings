@@ -29,7 +29,7 @@ int _convertPriorityConstant(LocationRequestPriority p) {
     case LocationRequestPriority.noPower:
       return 105;
     default:
-      throw ArgumentError('Unkown $p');
+      throw ArgumentError('Unkown priority: $p');
   }
 }
 
@@ -60,11 +60,21 @@ class LocationSettingsOptionAndroid {
 }
 
 class LocationSettingsStatusAndroid {
+
+  /// ref. https://developers.google.com/android/reference/com/google/android/gms/common/api/CommonStatusCodes.html#SUCCESS
   static const int SUCCESS = 0;
+
+  /// ref. https://developers.google.com/android/reference/com/google/android/gms/common/api/CommonStatusCodes.html#CANCELED
+  static const int CANCELED = 16;
+
+  /// ref. https://developers.google.com/android/reference/com/google/android/gms/location/LocationSettingsStatusCodes.html#SETTINGS_CHANGE_UNAVAILABLE
+  static const int SETTINGS_CHANGE_UNAVAILABLE = 8502;
 
   final int code;
 
   bool get isEnabled => this.code == SUCCESS;
+
+  bool get isDisabled => this.code != SUCCESS;
 
   LocationSettingsStatusAndroid(this.code);
 
