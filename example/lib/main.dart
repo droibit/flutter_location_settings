@@ -1,6 +1,5 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
+import 'dart:async';
 
 import 'package:flutter_location_settings/flutter_location_settings.dart';
 
@@ -40,18 +39,7 @@ class _MyAppState extends State<MyApp> {
     );
   }
 
-  void _checkLocationEnabled() {
-    if (Platform.isAndroid) {
-      _checkLocationEnabledAndroid();
-    } else if (Platform.isIOS) {
-      _checkLocationEnabledIOS();
-    } else {
-      setState(() =>
-          {_locationStatus = "Unknown platform: ${Platform.operatingSystem}"});
-    }
-  }
-
-  void _checkLocationEnabledAndroid() async {
+  void _checkLocationEnabled() async {
     final status = await LocationSettingsAndroid().checkLocationEnabled(
         LocationSettingsOptionAndroid(
             priority: LocationRequestPriority.highAccuracy,
@@ -59,34 +47,14 @@ class _MyAppState extends State<MyApp> {
             showDialogIfNecessary: true));
     debugPrint(status.toString());
 
+    // If the widget was removed from the tree while the asynchronous platform
+    // message was in flight, we want to discard the reply rather than calling
+    // setState to update our non-existent appearance.
     if (!mounted) return;
 
     setState(() {
       _locationStatus =
           'Location enabled: ${status.isEnabled}, code: ${status.code}';
-    });
-  }
-
-  void _checkLocationEnabledIOS() async {
-    final status = await LocationSettingsIOS().checkLocationEnabled(
-      LocationSettingsOptionIOS(
-        authorization: LocationRequestAuthorization.always,
-        showDialogIfNecessary: true
-      )
-    );
-
-    if (!mounted) return;
-
-    setState(() {
-      String text;
-      if (status.isEnabledAlways) {
-        text = 'always';
-      } else if (status.isEnabledWhenInUse) {
-        text = 'whenInUse';
-      } else {
-        text = 'disabled or restrict';
-      }
-      _locationStatus = 'Location enabled: $text, code: ${status.code}';
     });
   }
 }

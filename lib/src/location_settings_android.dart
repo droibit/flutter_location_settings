@@ -14,11 +14,8 @@ enum LocationRequestPriority {
   noPower
 }
 
-// ignore: missing_return
-int _convertPriorityConstant(LocationRequestPriority priority) {
-  assert(priority != null);
-
-  switch (priority) {
+int _convertPriorityConstant(LocationRequestPriority p) {
+  switch (p) {
     // https://developers.google.com/android/reference/com/google/android/gms/location/LocationRequest.html#PRIORITY_HIGH_ACCURACY
     case LocationRequestPriority.highAccuracy:
       return 100;
@@ -31,10 +28,11 @@ int _convertPriorityConstant(LocationRequestPriority priority) {
     // https://developers.google.com/android/reference/com/google/android/gms/location/LocationRequest.html#PRIORITY_NO_POWER
     case LocationRequestPriority.noPower:
       return 105;
+    default:
+      throw ArgumentError('Unkown priority: $p');
   }
 }
 
-@immutable
 class LocationSettingsOptionAndroid {
   final LocationRequestPriority priority;
 
@@ -61,7 +59,6 @@ class LocationSettingsOptionAndroid {
   }
 }
 
-@immutable
 class LocationSettingsStatusAndroid {
 
   /// ref. https://developers.google.com/android/reference/com/google/android/gms/common/api/CommonStatusCodes.html#SUCCESS
