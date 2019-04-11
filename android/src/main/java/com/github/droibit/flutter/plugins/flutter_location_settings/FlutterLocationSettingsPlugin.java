@@ -63,7 +63,8 @@ public class FlutterLocationSettingsPlugin
   }
 
   @SuppressWarnings("ConstantConditions")
-  private void checkLocationEnabled(@NonNull Map<String, Object> option,
+  private void checkLocationEnabled(
+      @NonNull Map<String, Object> option,
       @NonNull final Result result) {
     final LocationSettingsRequest.Builder builder = new LocationSettingsRequest.Builder();
     if (option.get(KEY_PRIORITY) != null) {
@@ -108,34 +109,29 @@ public class FlutterLocationSettingsPlugin
     final int statusCode = e.getStatusCode();
     final Runnable callbackFailed = new Runnable() {
       @Override public void run() {
-        FlutterLocationSettingsPlugin.this.pendingResult = null;
         result.success(statusCode);
+        FlutterLocationSettingsPlugin.this.pendingResult = null;
       }
     };
 
-    switch (statusCode) {
-      case LocationSettingsStatusCodes.RESOLUTION_REQUIRED:
-        if (showDialog) {
-          try {
-            final ResolvableApiException resolvable = (ResolvableApiException) e;
-            resolvable.startResolutionForResult(
-                registrar.activity(),
-                REQUEST_CODE_LOCATION_ENABLE
-            );
-            pendingResult = result;
-          } catch (IntentSender.SendIntentException | ClassCastException ignored) {
-            callbackFailed.run();
-          }
-        } else {
-          callbackFailed.run();
-        }
-        break;
-      case LocationSettingsStatusCodes.SETTINGS_CHANGE_UNAVAILABLE:
+    if (statusCode != LocationSettingsStatusCodes.RESOLUTION_REQUIRED) {
+      callbackFailed.run();
+      return;
+    }
+
+    if (showDialog) {
+      try {
+        final ResolvableApiException resolvable = (ResolvableApiException) e;
+        resolvable.startResolutionForResult(
+            registrar.activity(),
+            REQUEST_CODE_LOCATION_ENABLE
+        );
+        pendingResult = result;
+      } catch (IntentSender.SendIntentException | ClassCastException ignored) {
         callbackFailed.run();
-        break;
-      default:
-        callbackFailed.run();
-        break;
+      }
+    } else {
+      callbackFailed.run();
     }
   }
 
