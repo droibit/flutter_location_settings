@@ -13,3 +13,6 @@ build/
 
 # Directory created by dartdoc
 doc/api/
+
+# Flutter i18n
+res/values/strings_en.arb

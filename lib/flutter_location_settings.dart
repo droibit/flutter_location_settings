@@ -1,1 +1,3 @@
-export 'src/location_settings_android.dart';
+export 'src/location_settings_status.dart';
+export 'src/location_settings.dart';
+
